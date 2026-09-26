@@ -6,54 +6,57 @@
 
 [![Paper](https://img.shields.io/badge/Paper-CNS_Neuroscience_&_Therapeutics-4C78A8?style=flat-square)](https://doi.org/10.1002/cns.71047)
 [![Open Access](https://img.shields.io/badge/Open_Access-CC_BY_4.0-2A9D8F?style=flat-square)](https://doi.org/10.1002/cns.71047)
+[![AneuFusion](https://img.shields.io/badge/Extension-AneuFusion-8B5CF6?style=flat-square)](#architecture--aneufusion)
 [![Code](https://img.shields.io/badge/Code-structure_only-6B7280?style=flat-square)](#repository-layout)
+
+<sub>3D-DSA · geometric priors · clinical variables · PED planning</sub>
 
 </div>
 
-NeurAneuNet unifies 3D vascular segmentation, geometric knowledge, multimodal fusion, and PED sizing within one decision-support pipeline.
-
-## Architecture
-
 <p align="center">
-  <img src="assets/architecture.png" width="820" alt="NeurAneuNet architecture">
+  <img src="assets/graphical-abstract.png" width="920" alt="NeurAneuNet graphical abstract">
 </p>
 
-## Results
+NeurAneuNet unifies vascular segmentation, anatomical knowledge, multimodal fusion, and PED sizing in one decision-support pipeline.
 
-| PED recommendation | Planning time | Physician agreement |
-|:---:|:---:|:---:|
-| **95.2%** (20/21) | **672 → 371 s** | **83.3% → 96.0%** |
+## Architecture · AneuFusion
+
+AneuFusion extends the shared neurovascular backbone with dual-pathway encoding, ML-KAN feature extraction, and tensor-decomposition fusion.
 
 <p align="center">
-  <img src="assets/results.png" width="900" alt="NeurAneuNet results">
+  <img src="assets/architecture.png" width="920" alt="AneuFusion multimodal architecture">
 </p>
 
-## AneuFusion
+## Published results
 
-**Research extension · manuscript in preparation**
+| Segmentation Dice | PED classification | Diameter error | External recommendation |
+|:---:|:---:|:---:|:---:|
+| **0.874 ± 0.03** | **91.8%** | **0.24 ± 0.10 mm** | **95.2%** (20/21) |
 
-AneuFusion shares the neurovascular backbone and extends the system with structured image–geometry–clinical fusion for PED selection.
-
-| Selection accuracy | Diameter RMSE | Parameters |
-|:---:|:---:|:---:|
-| **82.1%** | **0.42 mm** | **14.8 M** |
+### Segmentation and device planning
 
 <p align="center">
-  <img src="assets/aneufusion-comparison.png" width="900" alt="AneuFusion multimodal fusion comparison">
+  <img src="assets/results-segmentation.png" width="900" alt="Published NeurAneuNet segmentation and device-planning results">
+</p>
+
+### Clinical thresholds
+
+<p align="center">
+  <img src="assets/results-clinical.png" width="960" alt="Published NeurAneuNet ROC and clinical threshold results">
 </p>
 
 ## Repository layout
 
 ```text
 NeurAneuNet/
-├── assets/                 # architecture and result figures
+├── assets/                 # graphical abstract, architecture, and results
 ├── configs/                # experiment configurations
 ├── data/                   # dataset interfaces
 ├── models/
 │   ├── segmentation/       # vascular segmentation backbone
 │   ├── fusion/             # multimodal tensor fusion
 │   └── decision/           # PED sizing and landing-zone heads
-├── evaluation/             # clinical and model evaluation
+├── evaluation/             # model and clinical evaluation
 └── README.md
 ```
 
