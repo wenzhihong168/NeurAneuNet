@@ -1,0 +1,25 @@
+# Python and notebooks
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+
+# Local research data
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Training artifacts
+checkpoints/
+runs/
+outputs/
+*.ckpt
+*.pt
+*.pth
+
+# Local system files
+.DS_Store
+.idea/
+.vscode/
