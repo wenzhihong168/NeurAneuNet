@@ -7,9 +7,9 @@
 [![Paper](https://img.shields.io/badge/Paper-CNS_Neuroscience_&_Therapeutics-4C78A8?style=flat-square)](https://doi.org/10.1002/cns.71047)
 [![Open Access](https://img.shields.io/badge/Open_Access-CC_BY_4.0-2A9D8F?style=flat-square)](https://doi.org/10.1002/cns.71047)
 [![AneuFusion](https://img.shields.io/badge/Extension-AneuFusion-8B5CF6?style=flat-square)](#architecture--aneufusion)
-[![Code](https://img.shields.io/badge/Code-structure_only-6B7280?style=flat-square)](#repository-layout)
+[![Repository](https://img.shields.io/badge/Repository-public-2563EB?style=flat-square)](#codebase-blueprint)
 
-<sub>3D-DSA · geometric priors · clinical variables · PED planning</sub>
+<sub>3D-DSA · vascular geometry · clinical knowledge · PED planning</sub>
 
 </div>
 
@@ -17,11 +17,29 @@
   <img src="assets/graphical-abstract.png" width="920" alt="NeurAneuNet graphical abstract">
 </p>
 
-NeurAneuNet unifies vascular segmentation, anatomical knowledge, multimodal fusion, and PED sizing in one decision-support pipeline.
+NeurAneuNet is an end-to-end decision-support framework that converts preoperative 3D rotational angiography into aneurysm segmentation, vascular measurements, PED sizing, and landing-zone recommendations.
+
+## At a glance
+
+| Input | Core model | Outputs | Evaluation |
+|:---|:---|:---|:---|
+| 3DRA, geometry, clinical phenotype | Dual-path U-Net++ · tensor fusion · KAN | Segmentation · PED size · diameter/length · landing zones | Internal modeling + independent clinical assessment |
+
+| Development cohort | PED-treated subset | Model split | Independent clinical cohort |
+|:---:|:---:|:---:|:---:|
+| **600 aneurysms** | **210 cases** | **147 / 21 / 42** | **21 cases · 6 physicians** |
+
+## Method
+
+1. **Vascular perception** — adaptive preprocessing and dual-path attention U-Net++ segment aneurysms and parent vessels.
+2. **Geometric reasoning** — centerlines, diameters, curvature, neck morphology, and candidate landing zones are derived from 3D anatomy.
+3. **Knowledge enhancement** — structured vascular and device priors provide clinically meaningful constraints.
+4. **Multimodal fusion** — image, geometric, temporal, clinical, and knowledge features interact through tensor decomposition.
+5. **Treatment planning** — high-order KAN heads jointly predict PED type, diameter, length, and proximal/distal placement.
 
 ## Architecture · AneuFusion
 
-AneuFusion extends the shared neurovascular backbone with dual-pathway encoding, ML-KAN feature extraction, and tensor-decomposition fusion.
+AneuFusion extends the shared neurovascular backbone with dual-pathway encoding, ML-KAN feature extraction, sparse attention, and tensor-decomposition fusion.
 
 <p align="center">
   <img src="assets/architecture.png" width="920" alt="AneuFusion multimodal architecture">
@@ -29,9 +47,15 @@ AneuFusion extends the shared neurovascular backbone with dual-pathway encoding,
 
 ## Published results
 
-| Segmentation Dice | PED classification | Diameter error | External recommendation |
+| Segmentation Dice | PED classification | Diameter error | Primary recommendation |
 |:---:|:---:|:---:|:---:|
 | **0.874 ± 0.03** | **91.8%** | **0.24 ± 0.10 mm** | **95.2%** (20/21) |
+
+| Clinical assessment | Without AI | With NeurAneuNet |
+|:---|:---:|:---:|
+| Planning time | 672 ± 225 s | **371 ± 51 s** |
+| NASA-TLX workload | 33 ± 8 | **21 ± 5** |
+| PED agreement | 83.3% | **96.0%** |
 
 ### Segmentation and device planning
 
@@ -45,22 +69,38 @@ AneuFusion extends the shared neurovascular backbone with dual-pathway encoding,
   <img src="assets/results-clinical.png" width="960" alt="Published NeurAneuNet ROC and clinical threshold results">
 </p>
 
-## Repository layout
+## Codebase blueprint
 
 ```text
 NeurAneuNet/
-├── assets/                 # graphical abstract, architecture, and results
-├── configs/                # experiment configurations
-├── data/                   # dataset interfaces
-├── models/
-│   ├── segmentation/       # vascular segmentation backbone
-│   ├── fusion/             # multimodal tensor fusion
-│   └── decision/           # PED sizing and landing-zone heads
-├── evaluation/             # model and clinical evaluation
+├── assets/                         # graphical abstract, architecture, results
+├── configs/
+│   ├── data/                       # cohort and preprocessing profiles
+│   ├── model/                      # module-level model settings
+│   └── experiment/                 # training and ablation protocols
+├── data/
+│   ├── raw/                        # local-only source data
+│   ├── processed/                  # normalized volumes and derived geometry
+│   └── splits/                     # patient-level split manifests
+├── neuraneunet/
+│   ├── datasets/                   # 3DRA loaders and transforms
+│   ├── models/
+│   │   ├── segmentation/           # dual-path attention U-Net++
+│   │   ├── geometry/               # centerline and morphometry modules
+│   │   ├── knowledge/              # vascular and device priors
+│   │   ├── fusion/                 # tensor-decomposition fusion
+│   │   └── decision/               # PED and landing-zone heads
+│   ├── pipelines/                  # training and inference orchestration
+│   ├── evaluation/                 # segmentation, planning, clinical metrics
+│   └── utils/                      # reproducibility and IO utilities
+├── scripts/                        # future command-line entry points
+├── tests/
+│   ├── unit/
+│   └── integration/
 └── README.md
 ```
 
-> Model implementation is not included in this release.
+The package directories are intentionally empty placeholders. Model implementation and clinical data are not included in this release.
 
 <details>
 <summary><b>Citation</b></summary>
