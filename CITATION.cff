@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+message: "If you use this project, please cite the published article below."
+title: "NeurAneuNet"
+type: software
+authors:
+  - family-names: Wen
+    given-names: Zhihong
+  - family-names: Guo
+    given-names: Shengli
+  - family-names: Peng
+    given-names: Yulin
+repository-code: "https://github.com/wenzhihong168/NeurAneuNet"
+url: "https://doi.org/10.1002/cns.71047"
+identifiers:
+  - type: doi
+    value: "10.1002/cns.71047"
+    description: "Published article"
+preferred-citation:
+  type: article
+  title: "Multimodal Deep Learning and Knowledge-Enhanced Intelligent Decision Support System for Pipeline Embolization Device Size Selection in Intracranial Aneurysm Treatment"
+  authors:
+    - family-names: Wen
+      given-names: Zhihong
+    - family-names: Guo
+      given-names: Shengli
+    - family-names: Peng
+      given-names: Yulin
+  journal: "CNS Neuroscience & Therapeutics"
+  volume: 32
+  issue: 7
+  year: 2026
+  doi: "10.1002/cns.71047"
