@@ -100,7 +100,7 @@ NeurAneuNet/
 └── README.md
 ```
 
-The package directories are intentionally empty placeholders. Model implementation and clinical data are not included in this release.
+The repository now includes a dependency-light public utility layer for validated data contracts, segmentation and planning metrics, and physical-space centerline geometry, with unit tests and CI. The trained multimodal model, checkpoints, and clinical data are not included in this release.
 
 <details>
 <summary><b>Citation</b></summary>
