@@ -10,6 +10,7 @@ Technical notes for the public NeurAneuNet research repository.
 | [Artifact manifest](ARTIFACT_MANIFEST.md) | Links cohorts, models, result tables, and figures |
 | [Failure analysis](FAILURE_ANALYSIS.md) | Localizes errors across perception, geometry, planning, and interaction |
 | [Reproducibility scope](REPRODUCIBILITY.md) | States deterministic controls and the public-release boundary |
+| [Release checklist](RELEASE_CHECKLIST.md) | Verifies clinical safety, evidence lineage, and public artifacts |
 
 ## Recommended order
 
