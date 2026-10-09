@@ -21,13 +21,26 @@ NeurAneuNet is an end-to-end decision-support framework that converts preoperati
 
 ## At a glance
 
-| Input | Core model | Outputs | Evaluation |
-|:---|:---|:---|:---|
-| 3DRA, geometry, clinical phenotype | Dual-path U-Net++ · tensor fusion · KAN | Segmentation · PED size · diameter/length · landing zones | Internal modeling + independent clinical assessment |
+<table align="center">
+  <tr align="center">
+    <th>Input</th><th>Core model</th><th>Outputs</th><th>Evaluation</th>
+  </tr>
+  <tr align="center">
+    <td>3DRA, geometry,<br>clinical phenotype</td>
+    <td>Dual-path U-Net++<br>tensor fusion · KAN</td>
+    <td>Segmentation · PED size<br>diameter/length · landing zones</td>
+    <td>Internal modeling<br>independent clinical assessment</td>
+  </tr>
+</table>
 
-| Development cohort | PED-treated subset | Model split | Independent clinical cohort |
-|:---:|:---:|:---:|:---:|
-| **600 aneurysms** | **210 cases** | **147 / 21 / 42** | **21 cases · 6 physicians** |
+<table align="center">
+  <tr align="center">
+    <th>Development cohort</th><th>PED-treated subset</th><th>Model split</th><th>Independent clinical cohort</th>
+  </tr>
+  <tr align="center">
+    <td><b>600 aneurysms</b></td><td><b>210 cases</b></td><td><b>147 / 21 / 42</b></td><td><b>21 cases · 6 physicians</b></td>
+  </tr>
+</table>
 
 ## Method
 
@@ -47,38 +60,58 @@ AneuFusion extends the shared neurovascular backbone with dual-pathway encoding,
 
 ## Published results
 
-| Segmentation Dice | PED classification | Diameter error | Primary recommendation |
-|:---:|:---:|:---:|:---:|
-| **0.874 ± 0.03** | **91.8%** | **0.24 ± 0.10 mm** | **95.2%** (20/21) |
+<table align="center">
+  <tr align="center">
+    <th>Segmentation Dice</th><th>PED classification</th><th>Diameter error</th><th>Primary recommendation</th>
+  </tr>
+  <tr align="center">
+    <td><b>0.874 ± 0.03</b></td><td><b>91.8%</b></td><td><b>0.24 ± 0.10 mm</b></td><td><b>95.2%</b> (20/21)</td>
+  </tr>
+</table>
 
-| Clinical assessment | Without AI | With NeurAneuNet |
-|:---|:---:|:---:|
-| Planning time | 672 ± 225 s | **371 ± 51 s** |
-| NASA-TLX workload | 33 ± 8 | **21 ± 5** |
-| PED agreement | 83.3% | **96.0%** |
+<table align="center">
+  <tr align="center">
+    <th>Clinical assessment</th><th>Without AI</th><th>With NeurAneuNet</th>
+  </tr>
+  <tr align="center"><td>Planning time</td><td>672 ± 225 s</td><td><b>371 ± 51 s</b></td></tr>
+  <tr align="center"><td>NASA-TLX workload</td><td>33 ± 8</td><td><b>21 ± 5</b></td></tr>
+  <tr align="center"><td>PED agreement</td><td>83.3%</td><td><b>96.0%</b></td></tr>
+</table>
 
 ### Clinical workflow
 
+The system follows a single clinical chain from 3DRA reconstruction and aneurysm delineation to vascular measurement, PED sizing, and physician assessment. This design keeps anatomical perception and treatment planning within the same auditable workflow.
+
 <p align="center">
-  <img src="assets/clinical-workflow.png" width="920" alt="NeurAneuNet clinical workflow and evaluation design">
+  <img src="assets/clinical-workflow.png" width="920" alt="NeurAneuNet clinical workflow and evaluation design"><br>
+  <sub>Figure 1. Clinical workflow and PED recommendation study design.</sub>
 </p>
 
 ### Representative segmentations
 
+Representative cases compare raw angiography, expert annotations, and model predictions in both 2D slices and 3D reconstructions. The examples illustrate preservation of the aneurysm boundary and its relationship to the parent vessel across different morphologies.
+
 <p align="center">
-  <img src="assets/qualitative-segmentation.png" width="900" alt="Representative 2D and 3D aneurysm segmentation cases">
+  <img src="assets/qualitative-segmentation.png" width="900" alt="Representative 2D and 3D aneurysm segmentation cases"><br>
+  <sub>Figure 2. Qualitative aneurysm segmentation in representative clinical cases.</sub>
 </p>
 
 ### Segmentation and device planning
 
+Quantitative evaluation connects segmentation quality with downstream PED selection and positioning. Performance is reported across device sizes and landing-zone targets rather than treating segmentation as an isolated endpoint.
+
 <p align="center">
-  <img src="assets/results-segmentation.png" width="900" alt="Published NeurAneuNet segmentation and device-planning results">
+  <img src="assets/results-segmentation.png" width="900" alt="Published NeurAneuNet segmentation and device-planning results"><br>
+  <sub>Figure 3. Segmentation and device-planning performance.</sub>
 </p>
 
 ### Clinical thresholds
 
+ROC analysis evaluates PED model discrimination, while the threshold panel summarizes whether each output meets its predefined clinical target. The combined view makes both predictive accuracy and operational acceptability visible.
+
 <p align="center">
-  <img src="assets/results-clinical.png" width="960" alt="Published NeurAneuNet ROC and clinical threshold results">
+  <img src="assets/results-clinical.png" width="960" alt="Published NeurAneuNet ROC and clinical threshold results"><br>
+  <sub>Figure 4. PED classification and clinical-threshold analysis.</sub>
 </p>
 
 Published tables: [clinical assistance](results/clinical_assistance.csv) · [morphometric agreement](results/morphometric_agreement.csv) · [single vs. multiple aneurysms](results/single_vs_multiple_aneurysms.csv)
