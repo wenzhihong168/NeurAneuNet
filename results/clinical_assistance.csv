@@ -1,0 +1,5 @@
+physician_cohort,planning_time_no_ai_seconds,planning_time_with_ai_seconds,nasa_tlx_no_ai,nasa_tlx_with_ai,agreement_no_ai,agreement_with_ai
+Senior (n=2),435 ± 112,361 ± 48,26 ± 4,16 ± 5,42/42 (100%),42/42 (100%)
+Intermediate (n=2),647 ± 86,372 ± 51,32 ± 5,22 ± 4,34/42 (80.9%),40/42 (95.2%)
+Junior (n=2),933 ± 76,381 ± 55,41 ± 6,24 ± 4,29/42 (69.0%),39/42 (92.9%)
+All physicians (n=6),672 ± 225,371 ± 51,33 ± 8,21 ± 5,105/126 (83.3%),121/126 (96.0%)
