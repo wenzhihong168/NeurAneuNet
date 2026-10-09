@@ -1,0 +1,8 @@
+metric,single_aneurysm,multiple_aneurysms,p_value
+Segmentation Dice coefficient,0.882 ± 0.03,0.856 ± 0.04,0.041
+HD95 (mm),4.2 ± 1.5,5.1 ± 1.8,0.038
+PED size classification accuracy (%),93.2 ± 2.1,88.5 ± 3.8,0.023
+Diameter prediction error (mm),0.22 ± 0.09,0.29 ± 0.13,0.031
+Length prediction error (mm),1.28 ± 0.42,1.58 ± 0.55,0.044
+Proximal landing-zone offset (mm),1.45 ± 0.44,1.72 ± 0.52,0.048
+Distal landing-zone offset (mm),2.28 ± 0.65,2.68 ± 0.78,0.042

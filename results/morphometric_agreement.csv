@@ -1,0 +1,9 @@
+cohort,parameter,ai,manual,mean_difference,limits_of_agreement,icc_95ci
+Internal test set (n=42),Maximum diameter,7.85 ± 3.52 mm,7.76 ± 3.41 mm,+0.09 mm,"[-0.68, +0.86] mm","0.941 [0.918, 0.958]"
+Internal test set (n=42),Neck width,4.21 ± 1.88 mm,4.08 ± 1.79 mm,+0.13 mm,"[-0.72, +0.98] mm","0.918 [0.889, 0.940]"
+Internal test set (n=42),Neck-to-dome ratio,0.556 ± 0.13,0.542 ± 0.11,+0.014,"[-0.098, +0.126]","0.902 [0.869, 0.928]"
+Internal test set (n=42),Aspect ratio,1.308 ± 0.38,1.272 ± 0.34,+0.036,"[-0.198, +0.270]","0.886 [0.848, 0.915]"
+External validation (n=21),Maximum diameter,8.31 ± 4.18 mm,8.19 ± 4.05 mm,+0.12 mm,"[-0.82, +1.06] mm","0.928 [0.895, 0.951]"
+External validation (n=21),Neck width,4.35 ± 2.12 mm,4.20 ± 2.01 mm,+0.15 mm,"[-0.89, +1.19] mm","0.905 [0.868, 0.932]"
+External validation (n=21),Neck-to-dome ratio,0.561 ± 0.15,0.544 ± 0.13,+0.017,"[-0.118, +0.152]","0.889 [0.848, 0.920]"
+External validation (n=21),Aspect ratio,1.321 ± 0.42,1.280 ± 0.38,+0.041,"[-0.228, +0.310]","0.872 [0.827, 0.907]"
