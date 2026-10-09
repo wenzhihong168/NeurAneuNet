@@ -57,6 +57,18 @@ AneuFusion extends the shared neurovascular backbone with dual-pathway encoding,
 | NASA-TLX workload | 33 ± 8 | **21 ± 5** |
 | PED agreement | 83.3% | **96.0%** |
 
+### Clinical workflow
+
+<p align="center">
+  <img src="assets/clinical-workflow.png" width="920" alt="NeurAneuNet clinical workflow and evaluation design">
+</p>
+
+### Representative segmentations
+
+<p align="center">
+  <img src="assets/qualitative-segmentation.png" width="900" alt="Representative 2D and 3D aneurysm segmentation cases">
+</p>
+
 ### Segmentation and device planning
 
 <p align="center">
@@ -69,11 +81,14 @@ AneuFusion extends the shared neurovascular backbone with dual-pathway encoding,
   <img src="assets/results-clinical.png" width="960" alt="Published NeurAneuNet ROC and clinical threshold results">
 </p>
 
+Published tables: [clinical assistance](results/clinical_assistance.csv) · [morphometric agreement](results/morphometric_agreement.csv) · [single vs. multiple aneurysms](results/single_vs_multiple_aneurysms.csv)
+
 ## Codebase blueprint
 
 ```text
 NeurAneuNet/
-├── assets/                         # graphical abstract, architecture, results
+├── assets/                         # graphical abstract, architecture, result figures
+├── results/                        # machine-readable published tables
 ├── configs/
 │   ├── data/                       # cohort and preprocessing profiles
 │   ├── model/                      # module-level model settings
