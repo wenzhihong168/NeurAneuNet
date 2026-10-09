@@ -14,10 +14,12 @@
 </div>
 
 <p align="center">
-  <img src="assets/graphical-abstract.png" width="920" alt="NeurAneuNet graphical abstract">
+  <img src="assets/graphical-abstract.png" alt="NeurAneuNet graphical abstract">
 </p>
 
 NeurAneuNet is an end-to-end decision-support framework that converts preoperative 3D rotational angiography into aneurysm segmentation, vascular measurements, PED sizing, and landing-zone recommendations.
+
+The study addresses a practical gap between image analysis and procedural planning. Rather than stopping at lesion segmentation, the framework carries anatomical information forward into device selection and deployment guidance, allowing the complete planning chain to be evaluated against expert measurements, device choices, and physician workflow outcomes.
 
 ## At a glance
 
@@ -54,8 +56,10 @@ NeurAneuNet is an end-to-end decision-support framework that converts preoperati
 
 AneuFusion extends the shared neurovascular backbone with dual-pathway encoding, ML-KAN feature extraction, sparse attention, and tensor-decomposition fusion.
 
+The architecture separates fine-grained vascular perception from higher-order clinical reasoning. Image features are integrated with geometric measurements, temporal descriptors, structured patient variables, and device knowledge before task-specific heads estimate PED type, diameter, length, and proximal/distal landing positions. This multimodal organization is intended to preserve anatomical detail while making the final recommendation responsive to procedural constraints.
+
 <p align="center">
-  <img src="assets/architecture.png" width="920" alt="AneuFusion multimodal architecture">
+  <img src="assets/architecture.png" alt="AneuFusion multimodal architecture">
 </p>
 
 ## Published results
@@ -82,8 +86,10 @@ AneuFusion extends the shared neurovascular backbone with dual-pathway encoding,
 
 The system follows a single clinical chain from 3DRA reconstruction and aneurysm delineation to vascular measurement, PED sizing, and physician assessment. This design keeps anatomical perception and treatment planning within the same auditable workflow.
 
+Model development used 600 aneurysms, including a 210-case PED-treated subset with patient-level training, validation, and test partitions. Clinical utility was assessed separately in 21 cases reviewed by six neurointerventional physicians, allowing technical performance and its effect on planning behavior to be examined as distinct but connected outcomes.
+
 <p align="center">
-  <img src="assets/clinical-workflow.png" width="920" alt="NeurAneuNet clinical workflow and evaluation design"><br>
+  <img src="assets/clinical-workflow.png" alt="NeurAneuNet clinical workflow and evaluation design"><br>
   <sub>Figure 1. Clinical workflow and PED recommendation study design.</sub>
 </p>
 
@@ -91,8 +97,10 @@ The system follows a single clinical chain from 3DRA reconstruction and aneurysm
 
 Representative cases compare raw angiography, expert annotations, and model predictions in both 2D slices and 3D reconstructions. The examples illustrate preservation of the aneurysm boundary and its relationship to the parent vessel across different morphologies.
 
+Across the test set, the model achieved an overall Dice coefficient of 0.874 ± 0.03, with an HD95 of 4.5 ± 1.6 mm, sensitivity of 92.5%, and specificity of 97.8%. Performance was lower for micro and small aneurysms, as expected from their limited voxel support, but the qualitative cases show that the system continued to recover clinically relevant aneurysm-neck and parent-vessel geometry.
+
 <p align="center">
-  <img src="assets/qualitative-segmentation.png" width="900" alt="Representative 2D and 3D aneurysm segmentation cases"><br>
+  <img src="assets/qualitative-segmentation.png" alt="Representative 2D and 3D aneurysm segmentation cases"><br>
   <sub>Figure 2. Qualitative aneurysm segmentation in representative clinical cases.</sub>
 </p>
 
@@ -100,8 +108,10 @@ Representative cases compare raw angiography, expert annotations, and model pred
 
 Quantitative evaluation connects segmentation quality with downstream PED selection and positioning. Performance is reported across device sizes and landing-zone targets rather than treating segmentation as an isolated endpoint.
 
+Mean PED size-classification accuracy reached 91.8%, while diameter prediction error was 0.24 ± 0.10 mm. The mean proximal and distal landing-zone offsets were 1.52 ± 0.47 mm and 2.38 ± 0.69 mm, respectively. These results show how errors propagate from anatomical reconstruction into the device-planning variables that determine whether a recommendation is operationally useful.
+
 <p align="center">
-  <img src="assets/results-segmentation.png" width="900" alt="Published NeurAneuNet segmentation and device-planning results"><br>
+  <img src="assets/results-segmentation.png" alt="Published NeurAneuNet segmentation and device-planning results"><br>
   <sub>Figure 3. Segmentation and device-planning performance.</sub>
 </p>
 
@@ -109,8 +119,10 @@ Quantitative evaluation connects segmentation quality with downstream PED select
 
 ROC analysis evaluates PED model discrimination, while the threshold panel summarizes whether each output meets its predefined clinical target. The combined view makes both predictive accuracy and operational acceptability visible.
 
+The mean AUC across PED models was 95.14%, with the most common device classes reaching AUCs between 95.99% and 97.06%. Clinical-threshold achievement ranged from 89.7% for distal landing-zone deviation to 97.5% for diameter error. In the physician study, AI assistance reduced mean planning time from 672 to 371 seconds, lowered NASA-TLX workload from 33 to 21, and increased agreement with the optimal PED choice from 83.3% to 96.0%.
+
 <p align="center">
-  <img src="assets/results-clinical.png" width="960" alt="Published NeurAneuNet ROC and clinical threshold results"><br>
+  <img src="assets/results-clinical.png" alt="Published NeurAneuNet ROC and clinical threshold results"><br>
   <sub>Figure 4. PED classification and clinical-threshold analysis.</sub>
 </p>
 
