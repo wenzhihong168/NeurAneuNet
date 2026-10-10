@@ -21,6 +21,16 @@ NeurAneuNet is an end-to-end decision-support framework that converts preoperati
 
 The study addresses a practical gap between image analysis and procedural planning. Rather than stopping at lesion segmentation, the framework carries anatomical information forward into device selection and deployment guidance, allowing the complete planning chain to be evaluated against expert measurements, device choices, and physician workflow outcomes.
 
+Developed in collaboration with **PLA General Hospital**, the project is organized around a clinically consequential question: how can a three-dimensional vascular image be transformed into a reproducible, inspectable, and physician-reviewable treatment plan? The answer requires more than a high Dice score. It requires consistent boundary reconstruction, physically meaningful centerlines and diameters, explicit device constraints, and a recommendation layer that remains sensitive to aneurysm morphology and parent-vessel geometry.
+
+## Research overview
+
+Pipeline embolization device planning is a coupled perception-and-decision problem. The selected device must cover the aneurysm neck, remain compatible with vessel diameter, accommodate local curvature, and provide proximal and distal landing zones that are technically plausible. Manual planning therefore combines image interpretation, geometric measurement, device knowledge, and operator experience. Small upstream errors can propagate: an uncertain aneurysm boundary changes neck localization; an unstable centerline alters diameter estimates; a biased diameter estimate can move the case across a device-size boundary.
+
+NeurAneuNet models this dependency chain directly. The segmentation branch identifies the aneurysm and parent artery from 3DRA; the geometric branch converts the segmentation into quantitative vascular descriptors; the knowledge branch represents clinically relevant device and anatomy priors; and the multimodal decision network jointly predicts PED class, diameter, length, and landing positions. The framework is therefore evaluated at three connected levels: anatomical fidelity, device-planning accuracy, and physician-facing workflow performance.
+
+The repository presents the work as an assistive planning system, not an autonomous procedural decision maker. The output is intended to structure and accelerate expert review. Difficult morphologies, weak boundaries, microaneurysms, lesions near bifurcations, and cases close to adjacent device thresholds remain situations in which the image, derived geometry, and alternative device candidates must be reviewed together.
+
 ## At a glance
 
 <table align="center">
@@ -52,6 +62,26 @@ The study addresses a practical gap between image analysis and procedural planni
 4. **Multimodal fusion** — image, geometric, temporal, clinical, and knowledge features interact through tensor decomposition.
 5. **Treatment planning** — high-order KAN heads jointly predict PED type, diameter, length, and proximal/distal placement.
 
+## Clinical problem formulation
+
+### From 3DRA to an actionable vascular representation
+
+The input is not treated as a generic volumetric classification sample. It is processed as a vascular scene in which the aneurysm sac, neck region, parent artery, local curvature, and candidate landing segments have distinct procedural meanings. The dual-path segmentation network is designed to preserve both global vessel continuity and fine aneurysm-boundary detail. Channel and spatial attention concentrate feature responses on foreground anatomy, while adversarial refinement encourages anatomically coherent masks in small or indistinct lesions.
+
+The resulting mask is converted into a geometry-aware representation. Centerline extraction defines the longitudinal coordinate system of the parent vessel; cross-sectional measurements estimate local diameter; curvature and neck morphology describe the spatial difficulty of deployment; and proximal and distal candidate regions define where the device may be anchored. Keeping these quantities in physical units is important because clinically relevant errors occur at the millimeter scale and cannot be interpreted reliably from voxel overlap alone.
+
+### Multimodal evidence and procedural knowledge
+
+The planning stage combines five information streams: bottleneck image features, explicit vascular geometry, temporal or procedural descriptors, structured clinical variables, and device-related knowledge. These streams differ in dimension, scale, and semantics. A direct concatenation would allow high-dimensional image features to dominate the decision even when a low-dimensional geometric constraint is decisive. Tensor-decomposition fusion is therefore used to expose higher-order interactions while controlling the size of the joint representation.
+
+This design is especially relevant for wide-neck, tortuous, or multi-lesion cases. In such settings, the correct device is not determined by a single measurement. Diameter, neck coverage, curvature, landing-zone length, and the available device catalogue interact. The fused representation provides the decision head with both anatomical evidence and structured constraints, allowing the recommendation to respond to the combination rather than treating every modality independently.
+
+### Multi-output treatment planning
+
+The decision network separates categorical and continuous outputs while training them as a connected task. Device model selection is optimized as a classification problem. Diameter and length are estimated through probabilistic regression, preserving uncertainty around continuous size predictions. Proximal and distal landing positions use geometry-aware objectives so that the final output remains tied to the reconstructed parent vessel.
+
+The KAN-based head represents nonlinear, high-order relationships within the fused feature space. Sparse attention selects the interactions most relevant to a case, and task-specific branches map the shared representation to device identity, physical dimensions, and placement. Learnable loss weights balance the classification, regression, and positional objectives so that one numerically dominant task does not suppress the others.
+
 ## Architecture · AneuFusion
 
 AneuFusion extends the shared neurovascular backbone with dual-pathway encoding, ML-KAN feature extraction, sparse attention, and tensor-decomposition fusion.
@@ -61,6 +91,16 @@ The architecture separates fine-grained vascular perception from higher-order cl
 <p align="center">
   <img src="assets/architecture.png" alt="AneuFusion multimodal architecture">
 </p>
+
+### Staged optimization strategy
+
+The published training protocol decomposes optimization into five stages. Segmentation is first pretrained with complementary overlap, boundary, and structural-similarity objectives. An adversarial stage then refines the realism and continuity of predicted masks. Geometry extraction and knowledge enhancement are trained after a stable anatomical representation is available. Multimodal fusion and the KAN decision layer are optimized with the earlier modules temporarily fixed, followed by end-to-end fine-tuning of the complete system.
+
+This schedule reflects the causal order of the workflow. The decision layer should not learn around a continually moving segmentation target, and geometric features should not be optimized before the underlying vascular surface is sufficiently stable. Final joint fine-tuning then allows downstream planning errors to adjust the upstream representation without discarding the anatomical priors established during pretraining.
+
+### Output contract
+
+For each case, the system produces an aneurysm and parent-vessel segmentation, derived morphometric measurements, a ranked device recommendation, diameter and length estimates, and proximal/distal landing positions. The primary quantitative evaluation uses the top-ranked recommendation. Alternative candidates and confidence values are intended to support review, not to retroactively increase reported accuracy.
 
 ## Published results
 
@@ -127,6 +167,46 @@ The mean AUC across PED models was 95.14%, with the most common device classes r
 </p>
 
 Published tables: [clinical assistance](results/clinical_assistance.csv) · [morphometric agreement](results/morphometric_agreement.csv) · [single vs. multiple aneurysms](results/single_vs_multiple_aneurysms.csv)
+
+## Evaluation design and interpretation
+
+### Anatomical validation
+
+Segmentation is assessed with complementary volumetric and surface metrics because overlap alone cannot establish whether the reconstructed vessel is suitable for measurement. Dice summarizes overall agreement; HD95 and mean surface distance capture boundary displacement; sensitivity and specificity characterize foreground recovery and background rejection. Morphometric agreement then tests whether the predicted surface preserves quantities used in planning, including maximum diameter, neck width, neck-to-dome ratio, and aspect ratio.
+
+The reported overall Dice of 0.874 ± 0.03 is accompanied by an HD95 of 4.5 ± 1.6 mm, a mean surface distance of 0.52 ± 0.15 mm, sensitivity of 92.5%, and specificity of 97.8%. Performance is lower for lesions below 5 mm, where partial-volume effects and limited voxel support make small absolute boundary shifts proportionally large. This size-stratified behavior is more informative than a single aggregate value because device selection may change near narrow diameter thresholds.
+
+### Planning validation
+
+Device planning is evaluated separately for class selection, continuous dimension estimation, and placement. The mean classification accuracy of 91.8% describes exact model selection across the evaluated PED catalogue. Diameter error of 0.24 ± 0.10 mm measures the continuous sizing problem, while length errors are reported by device-length group. Proximal and distal landing-zone offsets quantify how far the proposed deployment limits fall from their references.
+
+The asymmetry between proximal and distal offsets is clinically interpretable. Distal placement is more sensitive to vessel curvature, tapering, and the longer anatomical path traversed by large devices. Longer and larger-diameter PEDs are also more likely to be used in anatomically complex cases, so their error distribution reflects both device properties and case difficulty. For this reason, the repository presents the component outcomes rather than reducing the planning task to one headline accuracy.
+
+### Physician-assistance study
+
+The independent assessment included 21 PED-treated cases and six neurointerventional physicians spanning senior, intermediate, and junior experience levels. Each physician completed planning under conventional and AI-assisted conditions, with randomized condition order and a washout interval. Outcomes included completion time, NASA-TLX workload, and agreement with an expert-defined reference device.
+
+The aggregate results show a reduction in mean planning time from 672 ± 225 seconds to 371 ± 51 seconds, a decrease in NASA-TLX from 33 ± 8 to 21 ± 5, and an increase in device agreement from 83.3% to 96.0%. These findings describe performance within the reported controlled study. They do not establish improved procedural safety, aneurysm occlusion, or long-term patient outcomes, none of which were directly evaluated.
+
+### Failure structure
+
+The principal reported failure groups are complex morphology, indistinct aneurysm boundaries, and microaneurysms. These categories map to different parts of the system. Tortuosity and bifurcation proximity can destabilize centerline and landing-zone estimation; weak contrast affects neck localization; very small lesions magnify voxel-level errors; and multiple aneurysms can create competing segmentation signals. A case may therefore have an acceptable global mask while still containing a local geometric error relevant to device placement.
+
+The failure analysis motivates a review strategy based on both confidence and anatomy. Cases with small margins between device candidates, predictions near a size transition, low-confidence recommendations, marked tortuosity, or poorly defined boundaries should receive mandatory expert inspection. The confidence signal is a triage aid for review intensity, not a guarantee of correctness.
+
+## Research contribution
+
+NeurAneuNet contributes a complete image-to-plan formulation rather than an isolated segmentation model. Its main technical contribution is the explicit connection between vascular perception, physical geometry, structured knowledge, and device-specific prediction. This connection makes it possible to examine how anatomical error propagates into treatment-planning error and to evaluate the system using both computational metrics and physician workflow outcomes.
+
+The work also illustrates why multimodal fusion is valuable in interventional planning. Image features dominate local appearance, geometric descriptors encode the vessel surface in procedural units, and knowledge features become increasingly relevant when anatomy is unusual. The tensor-decomposition mechanism is designed to preserve these interactions without requiring every modality to contribute equally in every case.
+
+Finally, the project treats clinical assistance as a separate layer of evidence. Technical accuracy, agreement with an expert reference, reduced planning time, and lower workload answer different questions. Reporting them separately avoids treating a strong segmentation score as proof of clinical effectiveness.
+
+## Scope and limitations
+
+The current evidence is retrospective and institutionally concentrated. Broader applicability across hospitals, scanner protocols, patient populations, and interventional practice patterns requires multicenter prospective evaluation. Rare anatomical subgroups remain small, and the present device catalogue is limited to the PED families represented in the study. Transfer to other flow-diverter brands would require new data and device-specific validation.
+
+The system does not currently model hemodynamic change, post-deployment wall apposition, endothelial remodeling, thromboembolic events, or long-term occlusion. Consequently, the repository should be read as evidence for preoperative segmentation and planning assistance, not as evidence for procedural safety or patient-outcome benefit. The public release also excludes patient data, complete training code, model checkpoints, and institution-specific workflow assets.
 
 ## Codebase blueprint
 
